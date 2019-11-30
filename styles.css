@@ -15,6 +15,10 @@
   margin: 5px;
 }
 
+.product-info ul {
+  list-style-position: inside;
+}
+
 .product-info {
   display: flex;
   flex-direction: column;
@@ -22,6 +26,33 @@
 
 .product-image {
   margin: 5px;
+  margin-right: 15px;
+}
+
+.product-sizes {
+  display: flex;
+  flex-direction: row;
+}
+
+.product-sizes button {
+  padding: 10px;
+  margin: 5px;
+  color: #cc504a;
+  background-color: white;
+  border-radius: 50px;
+  border-color: deeppink;
+  border-width: 1px;
+  transition: 0.2s;
+}
+
+.product-sizes button:disabled {
+  background-color: rgb(189, 189, 189);
+  color: white;
+}
+
+.product-sizes button:not(:disabled):hover {
+  color: white;
+  background-color: #cc504a;
 }
 
 .sale {
