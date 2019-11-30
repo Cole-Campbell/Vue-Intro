@@ -15,7 +15,10 @@
           <img class="product-image" :src="product.imageURL" />
         </a>
         <div class="product-info">
-          <h1>{{product.name}}</h1>
+          <h1>
+            {{product.name}}
+            <span v-if="product.onSale" class="sale"> - On Sale!</span>
+          </h1>
           <p v-if="product.inStock">In Stock</p>
           <p v-else>Sold Out</p>
           <h2>{{product.description}}</h2>
