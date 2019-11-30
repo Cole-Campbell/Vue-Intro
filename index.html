@@ -10,6 +10,7 @@
   <body>
     <nav class="nav-bar"></nav>
     <div id="app">
+      <div class="nav-bar-cart">Cart ({{cart}})</div>
       <section class="product">
         <a :href="product.imageURL" target="_blank">
           <img class="product-image" :src="product.imageURL" />
@@ -29,7 +30,9 @@
           </ul>
           <section class="product-colors">
             <div v-for="variant in product.variants" :key="variant.id">
-              {{variant.color}}
+              <p @mouseover="displayImage(variant.imageURL)">
+                {{variant.color}}
+              </p>
             </div>
           </section>
           <section class="product-sizes">
@@ -37,6 +40,8 @@
               <button :disabled="!size.available">{{size.name}}</button>
             </div>
           </section>
+          <button v-on:click="addToCart">Add to Cart</button>
+          <button v-on:click="removeFromCart">Remove From Cart</button>
         </div>
       </section>
     </div>
