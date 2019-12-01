@@ -8,52 +8,13 @@
     <title>Document</title>
   </head>
   <body>
-    <nav class="nav-bar"></nav>
     <div id="app">
-      <div class="nav-bar-cart">Cart ({{cart}})</div>
-      <section class="product">
-        <a :href="product.imageURL" target="_blank">
-          <img class="product-image" :src="product.imageURL" />
-        </a>
-        <div class="product-info">
-          <h1>
-            {{product.name}}
-            <span v-if="product.onSale" class="sale"> - On Sale!</span>
-          </h1>
-          <p v-if="product.inStock">In Stock</p>
-          <p v-else :class="{soldOut: !product.inStock}">Sold Out</p>
-          <h2>{{product.description}}</h2>
-          <ul>
-            <li v-for="detail in product.details">
-              {{detail}}
-            </li>
-          </ul>
-          <section class="product-colors">
-            <div
-              v-for="variant in product.variants"
-              :key="variant.id"
-              class="color-box"
-              :style="{backgroundColor: variant.color}"
-              @mouseover="displayImage(variant.imageURL)"
-            ></div>
-          </section>
-          <section class="product-sizes">
-            <div v-for="size in product.sizes" :key="size.name">
-              <button :disabled="!size.available">{{size.name}}</button>
-            </div>
-          </section>
-          <button
-            v-on:click="addToCart"
-            :disabled="!product.inStock"
-            :class="{disabledButton: !product.inStock}"
-          >
-            Add to Cart
-          </button>
-          <button v-on:click="removeFromCart" :disabled="cart === 0">
-            Remove From Cart
-          </button>
-        </div>
-      </section>
+      <nav class="nav-bar">
+        <button @click="setPremium">Toggle Premium</button>
+      </nav>
+
+      <div class="nav-bar-cart">Cart</div>
+      <product :premium="premium"></product>
     </div>
 
     <!-- Vue Lib & JS -->
