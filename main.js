@@ -5,7 +5,7 @@ var app = new Vue({
       name: "Sock",
       description: "A singular sock, nothing more",
       imageURL: "http://placehold.it/250x300",
-      inStock: true,
+      inStock: false,
       onSale: true,
       details: ["80% Cotton", "20% Silk", "Single Sock"],
       variants: [

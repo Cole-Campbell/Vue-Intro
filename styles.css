@@ -40,6 +40,12 @@
   flex-direction: row;
 }
 
+.product-colors {
+  display: flex;
+  flex-direction: row;
+  margin: 5px 0;
+}
+
 .product-sizes button {
   padding: 10px;
   margin: 5px;
@@ -63,4 +69,22 @@
 
 .sale {
   color: red;
+}
+
+.disabledButton {
+  color: #dddddd;
+  background-color: #dddddd;
+}
+
+.soldOut {
+  text-decoration: line-through;
+}
+
+.color-box {
+  border: 1px solid #cccccc;
+  width: 25px;
+  height: 25px;
+  padding: 3px;
+  margin: 3px;
+  border-spacing: 3px;
 }
