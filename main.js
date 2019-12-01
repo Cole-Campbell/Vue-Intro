@@ -35,7 +35,7 @@ Vue.component("product", {
       >
         Add to Cart
       </button>
-      <button v-on:click="removeFromCart" :disabled="cart === 0">
+      <button v-on:click="removeFromCart">
         Remove From Cart
       </button>
     </div>
@@ -55,7 +55,6 @@ Vue.component("product", {
         name: "Sock",
         description: "A singular sock, nothing more",
         selectedVariant: 0,
-        inStock: false,
         onSale: true,
         details: ["80% Cotton", "20% Silk", "Single Sock"],
         variants: [
@@ -84,12 +83,16 @@ Vue.component("product", {
   },
   methods: {
     addToCart: function() {
-      this.cart++;
+      this.$emit(
+        "update-cart",
+        this.product.variants[this.product.selectedVariant].id
+      );
     },
     removeFromCart: function() {
-      if (this.cart > 0) {
-        this.cart--;
-      }
+      this.$emit(
+        "remove-cart",
+        this.product.variants[this.product.selectedVariant].id
+      );
     },
     displayImage: function(index) {
       this.product.selectedVariant = index;
@@ -130,11 +133,19 @@ Vue.component("product-details", {
 var app = new Vue({
   el: "#app",
   data: {
-    premium: true
+    premium: true,
+    cart: []
   },
   methods: {
     setPremium: function() {
       this.premium = !this.premium;
+    },
+    updateCart: function(id) {
+      this.cart.push(id);
+    },
+    removeCart: function(id) {
+      const i = this.cart.findIndex(item => item === id);
+      this.cart.pop(i);
     }
   }
 });

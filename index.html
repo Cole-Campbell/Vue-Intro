@@ -10,11 +10,14 @@
   <body>
     <div id="app">
       <nav class="nav-bar">
-        <button @click="setPremium">Toggle Premium</button>
+        <button @click="setPremium" v-show="false">Toggle Premium</button>
+        <div class="nav-bar-cart">Cart {{cart.length}}</div>
       </nav>
-
-      <div class="nav-bar-cart">Cart</div>
-      <product :premium="premium"></product>
+      <product
+        :premium="premium"
+        @update-cart="updateCart"
+        @remove-cart="removeCart"
+      ></product>
     </div>
 
     <!-- Vue Lib & JS -->
