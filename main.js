@@ -39,6 +39,16 @@ Vue.component("product", {
         Remove From Cart
       </button>
     </div>
+    <product-review @add-review="addReview"></product-review>
+    <article v-show="reviews.length" class="reviews">
+        <h2>Reviews</h2>
+        <section v-for="review in reviews">
+          <p>Rating {{review.rating}}</p>
+          <p>{{review.comment}}</p>
+          <em>{{review.name}}</em>
+          <em>Would Recommend:{{review.recommend}}</em>
+        </section>
+      </article>
   </section>
     `,
   props: {
@@ -50,6 +60,7 @@ Vue.component("product", {
   },
   data() {
     return {
+      reviews: [],
       brand: "Cole",
       product: {
         name: "Sock",
@@ -82,6 +93,9 @@ Vue.component("product", {
     };
   },
   methods: {
+    addReview: function(review) {
+      this.reviews.push(review);
+    },
     addToCart: function() {
       this.$emit(
         "update-cart",
@@ -126,6 +140,67 @@ Vue.component("product-details", {
     details: {
       type: Array[String],
       required: true
+    }
+  }
+});
+
+Vue.component("product-review", {
+  template: `
+    <form class="review-form" @submit.prevent="onSubmit">
+        <p v-if="errors.length">
+            <strong>Please correct errors</strong>
+            <ul>
+                <li v-for="error in errors">{{error}}</li>
+            </ul>
+        </p>
+        <label for="name">Name</label>
+        <input id="name" v-model="name">
+        <label>Comment</label>
+        <textarea v-model="comment"></textarea>
+        <label>Rating</label>
+        <select v-model.number="rating">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+        <label>Would you recommend this product?</label>
+        <input type="radio" name="recommend" v-model="recommend" value="Yes" />Yes
+        <input type="radio" name="recommend" v-model="recommend" value="No" />No<br/>
+        <input type="submit" value="Submit" />
+    </form>
+    `,
+  data() {
+    return {
+      name: null,
+      comment: null,
+      rating: null,
+      recommend: null,
+      errors: []
+    };
+  },
+  methods: {
+    onSubmit: function() {
+      if (this.name && this.comment && this.rating && this.recommend) {
+        const productReview = {
+          name: this.name,
+          comment: this.comment,
+          rating: this.rating,
+          recommend: this.recommend
+        };
+        this.$emit("add-review", productReview);
+
+        this.name = null;
+        this.comment = null;
+        this.rating = null;
+        this.recommend = null;
+      } else {
+        if (!this.name) this.errors.push("Name required.");
+        if (!this.comment) this.errors.push("Comment required.");
+        if (!this.rating) this.errors.push("Rating required.");
+        if (!this.recommend) this.errors.push("Recommendation required.");
+      }
     }
   }
 });
