@@ -1,3 +1,5 @@
+var eventBus = new Vue();
+
 Vue.component("product", {
   template: `
     <section class="product">
@@ -39,16 +41,8 @@ Vue.component("product", {
         Remove From Cart
       </button>
     </div>
-    <product-review @add-review="addReview"></product-review>
-    <article v-show="reviews.length" class="reviews">
-        <h2>Reviews</h2>
-        <section v-for="review in reviews">
-          <p>Rating {{review.rating}}</p>
-          <p>{{review.comment}}</p>
-          <em>{{review.name}}</em>
-          <em>Would Recommend:{{review.recommend}}</em>
-        </section>
-      </article>
+
+    <product-tabs :reviews="reviews"></product-tabs>
   </section>
     `,
   props: {
@@ -93,9 +87,6 @@ Vue.component("product", {
     };
   },
   methods: {
-    addReview: function(review) {
-      this.reviews.push(review);
-    },
     addToCart: function() {
       this.$emit(
         "update-cart",
@@ -125,6 +116,11 @@ Vue.component("product", {
     shipping() {
       return this.premium ? "Free" : "$10.95";
     }
+  },
+  mounted() {
+    eventBus.$on("add-review", productReview => {
+      this.reviews.push(productReview);
+    });
   }
 });
 
@@ -144,7 +140,31 @@ Vue.component("product-details", {
   }
 });
 
-Vue.component("product-review", {
+Vue.component("product-reviews", {
+  template: `
+  <section>
+    <p v-show="!reviews.length">No Reviews Yet</p>
+    <article v-show="reviews.length" class="reviews">
+        <h2>Reviews</h2>
+        <section v-for="review in reviews">
+          <p>Rating {{review.rating}}</p>
+          <p>{{review.comment}}</p>
+          <em>{{review.name}}</em>
+          <em>Would Recommend:{{review.recommend}}</em>
+        </section>
+      </article>
+    </section>
+    `,
+  props: {
+    reviews: {
+      type: Array,
+      required: true,
+      default: []
+    }
+  }
+});
+
+Vue.component("product-review-form", {
   template: `
     <form class="review-form" @submit.prevent="onSubmit">
         <p v-if="errors.length">
@@ -171,6 +191,13 @@ Vue.component("product-review", {
         <input type="submit" value="Submit" />
     </form>
     `,
+  props: {
+    reviews: {
+      type: Array,
+      required: true,
+      default: []
+    }
+  },
   data() {
     return {
       name: null,
@@ -189,18 +216,49 @@ Vue.component("product-review", {
           rating: this.rating,
           recommend: this.recommend
         };
-        this.$emit("add-review", productReview);
-
+        eventBus.$emit("add-review", productReview);
         this.name = null;
         this.comment = null;
         this.rating = null;
         this.recommend = null;
+        this.errors = [];
       } else {
         if (!this.name) this.errors.push("Name required.");
         if (!this.comment) this.errors.push("Comment required.");
         if (!this.rating) this.errors.push("Rating required.");
         if (!this.recommend) this.errors.push("Recommendation required.");
       }
+    }
+  }
+});
+
+Vue.component("product-tabs", {
+  template: `
+    <div class="review-section">
+        <span class="tab"
+        :class="{'active-tab': selectedTab === tab}"
+            v-for="(tab, index) in tabs"
+            :key="index"
+            @click="selectedTab = tab">
+            {{tab}}
+        </span>
+        <section class="tab-content">
+            <product-review-form v-if="selectedTab === 'Make a Review'" :reviews="reviews"></product-review-form>
+            <product-reviews v-if="selectedTab === 'Reviews'" :reviews="reviews"></product-reviews>
+        </section>
+    </div>
+    `,
+  data() {
+    return {
+      tabs: ["Reviews", "Make a Review"],
+      selectedTab: "Reviews"
+    };
+  },
+
+  props: {
+    reviews: {
+      type: Array,
+      default: []
     }
   }
 });
